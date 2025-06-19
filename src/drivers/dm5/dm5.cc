@@ -166,7 +166,9 @@ vector<Manga *> DM5::search(string keyword, int page) {
     if (pos != string::npos) {
       latest.replace(pos, (title + " ").length(), "");
     }
+
     delete latestNode;
+    delete huge;
 
     result.push_back(new Manga(this, id, title, thumbnail, latest, isEnded));
   }
@@ -175,6 +177,7 @@ vector<Manga *> DM5::search(string keyword, int page) {
   for (Node *node : items) {
     result.push_back(extractManga(node));
   }
+
   releaseMemory(items);
   delete body;
 
@@ -222,6 +225,7 @@ Manga *DM5::extractManga(Node *node) {
 
   // release memory allocated
   delete temp;
+  delete latestNode;
 
   return new Manga(this, id, title, thumbnail, latest, isEnded);
 }
@@ -278,11 +282,13 @@ Manga *DM5::extractDetails(Node *node, const string &id,
   if (pos != string::npos) {
     description.replace(pos, 12, "");
   }
+
   pos = description.find("[-折叠]");
   if (pos != string::npos) {
     description.replace(pos, 9, "");
   }
 
+  delete descriptionNode;
   delete infoNode;
 
   vector<Node *> genresNode = tipNode->findAll("a");
@@ -317,19 +323,22 @@ Manga *DM5::extractDetails(Node *node, const string &id,
   vector<Chapter> extra;
 
   Node *serialNode = node->tryFind("#detail-list-select-1");
-  if (serialNode != nullptr)
+  if (serialNode != nullptr) {
     pushChapters(serialNode, serial);
-  delete serialNode;
+    delete serialNode;
+  }
 
   Node *extraNode = node->tryFind("#detail-list-select-2");
-  if (extraNode != nullptr)
+  if (extraNode != nullptr) {
     pushChapters(extraNode, serial);
-  delete extraNode;
+    delete extraNode;
+  }
 
   extraNode = node->tryFind("#detail-list-select-3");
-  if (extraNode != nullptr)
+  if (extraNode != nullptr) {
     pushChapters(extraNode, serial);
-  delete extraNode;
+    delete extraNode;
+  }
 
   return new DetailsManga(this, id, title, thumbnail, latest, authors, isEnded,
                           description, genres, {serial, extra, ""});

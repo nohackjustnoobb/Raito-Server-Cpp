@@ -199,6 +199,7 @@ vector<PreviewManga> MHG::getUpdates(string proxy) {
   }
 
   delete body;
+  releaseMemory(items);
 
   return result;
 }

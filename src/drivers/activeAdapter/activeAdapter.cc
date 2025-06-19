@@ -224,6 +224,7 @@ void ActiveAdapter::mainLoop() {
         updateChapter(manga->chapters.extra, true);
 
         tr.commit();
+        delete manga;
       } catch (...) {
         log(fmt::format("ActiveDriver - {}", this->id),
             fmt::format("Failed to Get {}", id));

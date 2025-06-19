@@ -429,6 +429,7 @@ auto createOrEditManga = [](const HttpRequestPtr &req,
     JSON_RESPONSE(result->toJson().dump());
 
     delete result;
+    delete manga;
   } catch (...) {
     JSON_400_RESPONSE(
         R"({"error": "An unexpected error occurred when trying to create/edit manga."})")
